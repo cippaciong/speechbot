@@ -1,6 +1,7 @@
 require 'telegram/bot'
 require 'logger'
 require 'dotenv'
+require 'open-uri'
 
 require_relative 'converter'
 require_relative 'recognizer'
@@ -20,7 +21,6 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
     if message.voice
       # Download voice message
       file_path = bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
-      require 'open-uri'
       voice = "/tmp/#{file_path}"
       raw = voice.gsub(/oga/, 'wav')
       open(voice, 'wb') do |file|
@@ -32,11 +32,13 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
     if message.document
       # Download audio file
       file_path = bot.api.get_file(file_id: message.document.file_id)['result']['file_path']
-      require 'open-uri'
-      voice = "/tmp/#{file_path}"
-      raw = voice.gsub(/opus/, 'wav')
-      open(voice, 'wb') do |file|
-        file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
+      # Make sure is an opus file
+      if file_path.include? 'opus'
+        voice = "/tmp/#{file_path}"
+        raw = voice.gsub(/opus/, 'wav')
+        open(voice, 'wb') do |file|
+          file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
+        end
       end
     end
 
