@@ -11,6 +11,7 @@ GEM
       descendants_tracker (~> 0.0.1)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
+    dotenv (2.1.1)
     equalizer (0.0.11)
     faraday (0.10.0)
       multipart-post (>= 1.2, < 3)
@@ -74,9 +75,10 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  dotenv
   google-cloud-speech
   ruby-sox
   telegram-bot-ruby
 
 BUNDLED WITH
-   1.11.2
+   1.13.6
