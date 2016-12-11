@@ -1,10 +1,14 @@
 require 'telegram/bot'
 require 'logger'
+require 'dotenv'
 
 require_relative 'converter'
 require_relative 'recognizer'
 
-token = '306889784:AAHKlhiW08ivzHqUD3-Qw0ufGhfL6xAXoAs'
+# Load env vars
+Dotenv.load
+
+token = ENV['BOT_TOKEN']
 
 Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
   bot.logger.info('Bot has been started')
