@@ -17,8 +17,9 @@ Struct.new('Audio', :voice, :raw, :rate, :encoding, :channels, :language)
 Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
   bot.logger.info('Bot has been started')
   bot.listen do |message|
-    # catch voice messages
+    # Catch voice messages or audio files
     if message.voice || message.document
+      # catch voice messages
       if message.voice
         # Download voice message
         file_path = bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
@@ -27,6 +28,7 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
         open(voice, 'wb') do |file|
           file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
         end
+        text = prepare_reply(voice, raw)
       end
 
       # Catch audio documents
@@ -41,16 +43,8 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
             file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
           end
         end
+        text = prepare_reply(voice, raw)
       end
-
-      # Create Audio Struct
-      audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
-
-      # Convert Audio
-      Converter.convert(audio)
-
-      # Recognize audio
-      text = Recognizer.recognize(audio)
 
       # Send reply
       bot.api.send_message(chat_id: message.chat.id, text: text)
@@ -59,8 +53,21 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
     case message.text
     when /start/
       bot.api.send_message(chat_id: message.chat.id, text: "Hello, #{message.from.first_name}")
-    when /stop/
-      bot.api.send_message(chat_id: message.chat.id, text: "Bye, #{message.from.first_name}")
     end
   end
+end
+
+private
+def prepare_reply(voice, raw)
+  audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
+  convert(audio)
+  recognize(audio)
+end
+
+def convert(audio)
+  Converter.convert(audio)
+end
+
+def recognize(audio)
+  Recognizer.recognize(audio)
 end
