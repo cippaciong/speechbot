@@ -1,7 +1,7 @@
-require "google/cloud/speech"
+require 'google/cloud/speech'
 
 module Recognizer
-  def Recognizer.recognize(audio)
+  def self.recognize(audio)
     speech = Google::Cloud::Speech.new
     job = speech.recognize_job audio.raw,
                                encoding: audio.encoding,
@@ -16,11 +16,7 @@ module Recognizer
 
     # Return the rirst result
     results = job.results
-    unless results.empty?
-      result = results.first
-      result.transcript
-    else
-      'wut?'
-    end
+    result = results.first
+    result.transcript || 'wut?'
   end
 end
