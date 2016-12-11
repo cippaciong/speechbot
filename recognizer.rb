@@ -17,6 +17,6 @@ module Recognizer
     # Return the rirst result
     results = job.results
     result = results.first
-    result.transcript || 'wut?'
+    result ? result.transcript : 'wut?'
   end
 end
