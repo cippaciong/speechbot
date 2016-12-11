@@ -10,6 +10,9 @@ Dotenv.load
 
 token = ENV['BOT_TOKEN']
 
+# Define Audio Struct
+Struct.new("Audio", :voice, :raw, :rate, :encoding, :channels, :language)
+
 Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
   bot.logger.info('Bot has been started')
   bot.listen do |message|
