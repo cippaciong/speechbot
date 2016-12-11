@@ -14,6 +14,21 @@ token = ENV['BOT_TOKEN']
 # Define Audio Struct
 Struct.new('Audio', :voice, :raw, :rate, :encoding, :channels, :language)
 
+# Define helper methods
+def prepare_reply(voice, raw)
+  audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
+  convert(audio)
+  recognize(audio)
+end
+
+def convert(audio)
+  Converter.convert(audio)
+end
+
+def recognize(audio)
+  Recognizer.recognize(audio)
+end
+
 Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
   bot.logger.info('Bot has been started')
   bot.listen do |message|
@@ -55,19 +70,4 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
       bot.api.send_message(chat_id: message.chat.id, text: "Hello, #{message.from.first_name}")
     end
   end
-end
-
-private
-def prepare_reply(voice, raw)
-  audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
-  convert(audio)
-  recognize(audio)
-end
-
-def convert(audio)
-  Converter.convert(audio)
-end
-
-def recognize(audio)
-  Recognizer.recognize(audio)
 end
