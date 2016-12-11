@@ -43,7 +43,9 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
         open(voice, 'wb') do |file|
           file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
         end
+        # Send reply
         text = prepare_reply(voice, raw)
+        bot.api.send_message(chat_id: message.chat.id, text: text)
       end
 
       # Catch audio documents
@@ -58,11 +60,11 @@ Telegram::Bot::Client.run(token, logger: Logger.new($stderr)) do |bot|
             file << open("https://api.telegram.org/file/bot#{token}/#{file_path}").read
           end
         end
+        # Send reply
         text = prepare_reply(voice, raw)
+        bot.api.send_message(chat_id: message.chat.id, text: text)
       end
 
-      # Send reply
-      bot.api.send_message(chat_id: message.chat.id, text: text)
     end
 
     case message.text
