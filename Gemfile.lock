@@ -54,6 +54,7 @@ GEM
     multipart-post (2.0.0)
     os (0.9.6)
     public_suffix (2.0.4)
+    rack (2.0.1)
     rly (0.2.3)
     ruby-sox (0.0.3)
     signet (0.7.3)
@@ -61,7 +62,7 @@ GEM
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
-    telegram-bot-ruby (0.7.0)
+    telegram-bot-ruby (0.7.1)
       faraday
       virtus
     thread_safe (0.3.5)
@@ -77,6 +78,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv
   google-cloud-speech
+  rack
   ruby-sox
   telegram-bot-ruby
 
