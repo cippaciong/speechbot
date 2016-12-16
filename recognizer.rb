@@ -2,6 +2,7 @@ require 'google/cloud/speech'
 
 module Recognizer
   def self.recognize(audio)
+    begin
     speech = Google::Cloud::Speech.new
     job = speech.recognize_job audio.raw,
                                encoding: audio.encoding,
@@ -18,5 +19,8 @@ module Recognizer
     results = job.results
     result = results.first
     result ? result.transcript : 'wut?'
+    rescue Google::Cloud::InvalidArgumentError
+      "Files longer than 1 minute are not supported for now, sorry :("
+    end
   end
 end
