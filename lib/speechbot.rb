@@ -3,8 +3,8 @@ require 'logger'
 require 'dotenv'
 require 'open-uri'
 
-require_relative 'converter'
-require_relative 'recognizer'
+require 'speechbot/converter'
+require 'speechbot/recognizer'
 
 class SpeechBot
   # Load env vars
