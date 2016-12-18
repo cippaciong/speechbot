@@ -50,6 +50,7 @@ GEM
       little-plugger (~> 1.1)
       multi_json (~> 1.10)
     memoist (0.15.0)
+    minitest (5.10.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
     os (0.9.6)
@@ -78,6 +79,7 @@ PLATFORMS
 DEPENDENCIES
   dotenv
   google-cloud-speech
+  minitest
   rack
   ruby-sox
   telegram-bot-ruby
