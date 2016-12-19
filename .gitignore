@@ -6,3 +6,6 @@
 
 # vim swap file
 *.swp
+
+# ctags
+tags
