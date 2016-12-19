@@ -1,27 +1,21 @@
 require 'ruby-sox'
+require 'dry-monads'
 
+#audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
 module Converter
-  def self.convert(audio)
-    if self.opus?(audio)
-      sox = Sox::Cmd.new
-                    .add_input(audio.voice)
-                    .set_output(audio.raw)
-                    .set_effects(rate: audio.rate, channels: audio.channels)
+  def self.convert(lossy)
+    ext = lossy.split('.')[-1]
+    raw = lossy.gsub(/#{ext}/, 'wav')
+    sox = Sox::Cmd.new
+                  .add_input(lossy)
+                  .set_output(raw)
+                  .set_effects(rate: 16_000, channels: 1)
+    begin
       sox.run
-    else
-      'Sorry, only Opus (ogg) files are supported'
+    rescue Sox::Error
+      return Dry::Monads.Left('Wrong input file encoding')
     end
+
+    Dry::Monads.Right(raw)
   end
-
-  private
-  def self.opus?(audio)
-    # Suppress stderr messages
-    $stderr.reopen("/dev/null", "w")
-
-    # Run sox --i and checks if output contains 'Opus'
-    IO.popen(['sox', '--i', audio], 'r') do |f|
-      return !f.gets(nil).to_s.scan('Opus').empty?
-    end
-  end
-
 end

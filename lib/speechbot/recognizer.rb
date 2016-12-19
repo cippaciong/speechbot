@@ -1,13 +1,14 @@
 require 'google/cloud/speech'
+require 'dry-monads'
 
 module Recognizer
-  def self.recognize(audio)
+  def self.recognize(rawfile, lang)
     begin
     speech = Google::Cloud::Speech.new
-    job = speech.recognize_job audio.raw,
-                               encoding: audio.encoding,
-                               sample_rate: audio.rate,
-                               language: audio.language
+    job = speech.recognize_job rawfile,
+                               encoding: :raw,
+                               sample_rate: 16_000,
+                               language: lang
 
     # Wait for the job to be done
     until job.done?
@@ -18,9 +19,12 @@ module Recognizer
     # Return the rirst result
     results = job.results
     result = results.first
-    result ? result.transcript : 'wut?'
+    result ? Dry::Monads.Right(result.transcript) : Dry::Monads.Left('wut?')
     rescue Google::Cloud::InvalidArgumentError
-      "Files longer than 1 minute are not supported for now, sorry :("
+      return Dry::Monads.Left('Files longer than 1 minute ' \
+                              'are not supported for now, sorry :(')
+    rescue Google::Cloud::UnavailableError
+      return Dry::Monads.Left('Service unavailable, please retry')
     end
   end
 end
