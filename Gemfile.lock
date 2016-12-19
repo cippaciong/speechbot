@@ -3,18 +3,18 @@ GEM
   specs:
     addressable (2.5.0)
       public_suffix (~> 2.0, >= 2.0.2)
+    ast (2.3.0)
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
       thread_safe (~> 0.3, >= 0.3.1)
+    coderay (1.1.1)
     coercible (1.0.0)
       descendants_tracker (~> 0.0.1)
     concurrent-ruby (1.0.3)
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     dotenv (2.1.1)
-    dry-auto_inject (0.4.2)
-      dry-container (>= 0.3.4)
     dry-configurable (0.4.0)
       concurrent-ruby (~> 1.0)
     dry-container (0.6.0)
@@ -67,23 +67,41 @@ GEM
       little-plugger (~> 1.1)
       multi_json (~> 1.10)
     memoist (0.15.0)
+    method_source (0.8.2)
     minitest (5.10.1)
     multi_json (1.12.1)
     multipart-post (2.0.0)
     os (0.9.6)
+    parser (2.3.3.1)
+      ast (~> 2.2)
+    powerpack (0.1.1)
+    pry (0.10.4)
+      coderay (~> 1.1.0)
+      method_source (~> 0.8.1)
+      slop (~> 3.4)
     public_suffix (2.0.4)
     rack (2.0.1)
+    rainbow (2.1.0)
     rly (0.2.3)
+    rubocop (0.46.0)
+      parser (>= 2.3.1.1, < 3.0)
+      powerpack (~> 0.1)
+      rainbow (>= 1.99.1, < 3.0)
+      ruby-progressbar (~> 1.7)
+      unicode-display_width (~> 1.0, >= 1.0.1)
+    ruby-progressbar (1.8.1)
     ruby-sox (0.0.3)
     signet (0.7.3)
       addressable (~> 2.3)
       faraday (~> 0.9)
       jwt (~> 1.5)
       multi_json (~> 1.10)
+    slop (3.6.0)
     telegram-bot-ruby (0.7.1)
       faraday
       virtus
     thread_safe (0.3.5)
+    unicode-display_width (1.1.2)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -96,12 +114,13 @@ PLATFORMS
 
 DEPENDENCIES
   dotenv
-  dry-auto_inject
   dry-monads
   dry-transaction
   google-cloud-speech
   minitest
+  pry
   rack
+  rubocop (~> 0.46.0)
   ruby-sox
   telegram-bot-ruby
 

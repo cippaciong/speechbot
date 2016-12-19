@@ -18,7 +18,6 @@ group :test do
 end
 
 group :development do
-  gem 'minitest'
   gem 'pry'
   gem 'rubocop', '~> 0.46.0'
 end
