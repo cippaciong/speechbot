@@ -39,7 +39,7 @@ class SpeechBot
   end
 
   def recognize(audio)
-    Recognizer.recognize(audio).value
+    Recognizer.recognize(audio, "it_IT").value
   end
 
   def read_and_reply(message)
