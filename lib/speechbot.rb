@@ -28,18 +28,18 @@ class SpeechBot
   end
 
   # Define helper methods
-  def prepare_reply(voice, raw)
-    audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
-    convert(audio)
-    recognize(audio)
+  def prepare_reply(voice)
+    # audio = Struct::Audio.new(voice, raw, 16_000, :raw, 1, 'it_IT')
+    raw = convert(voice)
+    recognize(raw)
   end
 
   def convert(audio)
-    Converter.convert(audio)
+    Converter.convert(audio).value
   end
 
   def recognize(audio)
-    Recognizer.recognize(audio)
+    Recognizer.recognize(audio).value
   end
 
   def read_and_reply(message)
@@ -55,7 +55,7 @@ class SpeechBot
             file << open("https://api.telegram.org/file/bot#{@token}/#{file_path}").read
           end
           # Send reply
-          text = prepare_reply(voice, raw)
+          text = prepare_reply(voice)
           @bot.api.send_message(chat_id: message.chat.id, text: text)
         end
 
@@ -71,7 +71,7 @@ class SpeechBot
               file << open("https://api.telegram.org/file/bot#{@token}/#{file_path}").read
             end
           # Send reply
-          text = prepare_reply(voice, raw)
+          text = prepare_reply(voice)
           @bot.api.send_message(chat_id: message.chat.id, text: text)
           end
         end
