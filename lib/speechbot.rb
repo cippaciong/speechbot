@@ -17,7 +17,11 @@ class SpeechBot
   end
 
   def download_file(message)
-    file = @bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
+    if message.voice
+      file = @bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
+    else
+      file = @bot.api.get_file(file_id: message.document.file_id)['result']['file_path']
+    end
     input_path = "/tmp/#{file}"
     open(input_path, 'wb') do |input|
       input << open("https://api.telegram.org/file/bot#{@token}/#{file}").read
