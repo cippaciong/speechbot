@@ -15,9 +15,11 @@ gem 'dry-transaction'
 
 group :test do
   gem 'minitest'
+  gem 'minitest-reporters'
 end
 
 group :development do
   gem 'pry'
+  gem 'rake'
   gem 'rubocop', '~> 0.46.0'
 end
