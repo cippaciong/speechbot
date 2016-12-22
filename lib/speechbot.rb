@@ -2,9 +2,9 @@ require 'telegram/bot'
 require 'logger'
 require 'dotenv'
 require 'open-uri'
+require 'dry-transaction'
 
-require 'speechbot/converter'
-require 'speechbot/recognizer'
+require 'speechbot/container'
 
 class SpeechBot
   # Load env vars
@@ -45,37 +45,38 @@ class SpeechBot
   def read_and_reply(message)
       # Catch voice messages or audio files
       if message.voice || message.document
-        # catch voice messages
-        if message.voice
-          # Download voice message
-          file_path = @bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
-          voice = "/tmp/#{file_path}"
-          raw = voice.gsub(/oga/, 'wav')
-          open(voice, 'wb') do |file|
-            file << open("https://api.telegram.org/file/bot#{@token}/#{file_path}").read
-          end
-          # Send reply
-          text = prepare_reply(voice)
-          @bot.api.send_message(chat_id: message.chat.id, text: text)
+        file = @bot.api.get_file(file_id: message.voice.file_id)['result']['file_path']
+        input_path = "/tmp/#{file}"
+        open(input_path, 'wb') do |input|
+          input << open("https://api.telegram.org/file/bot#{@token}/#{file}").read
         end
 
-        # Catch audio documents
-        if message.document
-          # Download audio file
-          file_path = @bot.api.get_file(file_id: message.document.file_id)['result']['file_path']
-          # Make sure is an opus file
-          if file_path.include? 'opus'
-            voice = "/tmp/#{file_path}"
-            raw = voice.gsub(/opus/, 'wav')
-            open(voice, 'wb') do |file|
-              file << open("https://api.telegram.org/file/bot#{@token}/#{file_path}").read
-            end
-          # Send reply
-          text = prepare_reply(voice)
-          @bot.api.send_message(chat_id: message.chat.id, text: text)
-          end
-        end
+        convert_ogg = Dry.Transaction(container: Container) do
+          step :convert
+          step :recognize
+        end 
+        # Send reply
+        text = convert_ogg.call(input_path, recognize: ["it_IT"]).value
+        @bot.api.send_message(chat_id: message.chat.id, text: text)
       end
+
+        ## Catch audio documents
+        #if message.document
+          ## Download audio file
+          #file_path = @bot.api.get_file(file_id: message.document.file_id)['result']['file_path']
+          ## Make sure is an opus file
+          #if file_path.include? 'opus'
+            #voice = "/tmp/#{file_path}"
+            #raw = voice.gsub(/opus/, 'wav')
+            #open(voice, 'wb') do |file|
+              #file << open("https://api.telegram.org/file/bot#{@token}/#{file_path}").read
+            #end
+          ## Send reply
+          #text = prepare_reply(voice)
+          #@bot.api.send_message(chat_id: message.chat.id, text: text)
+          #end
+        #end
+      #end
 
       case message.text
       when /start/
