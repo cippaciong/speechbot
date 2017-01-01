@@ -1,8 +1,9 @@
+require 'time'
 $stderr.reopen("/dev/null", "w")
 
 def duration(audio)
   IO.popen(['soxi', '-d', audio], 'r') do |f|
-    f.gets(nil).to_s
+    Time.parse(f.gets(nil).to_s)
   end
 end
 
@@ -36,14 +37,59 @@ def file_type(audio)
   end
 end
 
+
+Struct.new("AudioInfo", :duration, :encoding, :file_type, :sample_rate, :precision)
+
+puts
+
 audio = 'test/samples/audio.ogg'
+audio_info = Struct::AudioInfo.new(duration(audio),
+                                   encoding(audio),
+                                   file_type(audio),
+                                   sample_rate(audio),
+                                   precision(audio))
 
-audio_info = { duration: duration(audio),
-               encoding: encoding(audio),
-               file_type: file_type(audio),
-               sample_rate: sample_rate(audio),
-               precision: precision(audio) }
-
-audio_info.each do |key, value|
+audio_info.each_pair do |key, value|
   puts "#{key}: #{value}"
 end
+
+puts
+
+audio = 'test/samples/capra.mp3'
+audio_info = Struct::AudioInfo.new(duration(audio),
+                                   encoding(audio),
+                                   file_type(audio),
+                                   sample_rate(audio),
+                                   precision(audio))
+
+audio_info.each_pair do |key, value|
+  puts "#{key}: #{value}"
+end
+
+puts
+
+audio = 'test/samples/audio.wav'
+audio_info = Struct::AudioInfo.new(duration(audio),
+                                   encoding(audio),
+                                   file_type(audio),
+                                   sample_rate(audio),
+                                   precision(audio))
+
+audio_info.each_pair do |key, value|
+  puts "#{key}: #{value}"
+end
+
+puts
+
+audio = 'test/samples/audio_too_long.ogg'
+audio_info = Struct::AudioInfo.new(duration(audio),
+                                   encoding(audio),
+                                   file_type(audio),
+                                   sample_rate(audio),
+                                   precision(audio))
+
+audio_info.each_pair do |key, value|
+  puts "#{key}: #{value}"
+end
+
+puts
