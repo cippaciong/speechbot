@@ -1,11 +1,19 @@
 require 'google/cloud/speech'
+require 'google/cloud/storage'
 require 'dry-monads'
 
 module Recognizer
-  def self.recognize(rawfile, lang)
+  def self.upload(rawfile)
+    storage = Google::Cloud::Storage.new
+    bucket = storage.bucket "speechbot-test"
+    wav = bucket.create_file rawfile, rawfile
+    return Dry::Monads::Right("gs://#{bucket.id}/#{wav.name}")
+  end
+
+  def self.recognize(gs_url, lang)
     begin
     speech = Google::Cloud::Speech.new
-    job = speech.recognize_job rawfile,
+    job = speech.recognize_job gs_url,
                                encoding: :raw,
                                sample_rate: 16_000,
                                language: lang
