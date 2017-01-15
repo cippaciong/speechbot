@@ -4,6 +4,7 @@ source 'https://rubygems.org'
 #API
 gem 'dotenv'
 gem 'google-cloud-speech'
+gem 'google-cloud-storage'
 gem 'telegram-bot-ruby'
 
 gem 'rack'
