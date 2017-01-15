@@ -22,7 +22,7 @@ class SpeechBot
     else
       file = @bot.api.get_file(file_id: message.document.file_id)['result']['file_path']
     end
-    input_path = "/tmp/#{file}"
+    input_path = "files/#{file}"
     open(input_path, 'wb') do |input|
       input << open("https://api.telegram.org/file/bot#{@token}/#{file}").read
     end
@@ -33,7 +33,9 @@ class SpeechBot
     input_path = download_file(message)
     # Initialize transaction
     convert_ogg = Dry.Transaction(container: Container) do
+      #step :download
       step :convert
+      step :upload
       step :recognize
     end 
     # Send reply

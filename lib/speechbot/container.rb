@@ -14,6 +14,9 @@ class Container
     Converter.convert(input)
   }
 
+  register :upload, -> input, lang {
+    Recognizer.upload(input)
+  }
   register :recognize, -> input, lang {
     Recognizer.recognize(input, lang)
   }
