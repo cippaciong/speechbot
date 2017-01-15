@@ -5,6 +5,10 @@ require 'dry-transaction'
 # Set up a container (using dry-container here)
 class Container
   extend Dry::Container::Mixin
+  
+  register :download, -> bot, input {
+    Downloader.download(bot, input)
+  }
 
   register :convert, -> input {
     Converter.convert(input)
